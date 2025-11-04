@@ -59,7 +59,7 @@
     "city": "Denver",
     "state": "CO",
     "postal_code": "80202",
-    "phone_num": "303-555-4444",
+    "phone_num": "303-555-4444"
   },
   {
     "timestamp": "2025-11-04T19:30:12Z",
@@ -86,4 +86,4 @@
     "state": "FL",
     "postal_code": "33101"
   }
-}
+]

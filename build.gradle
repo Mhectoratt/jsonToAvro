@@ -7,6 +7,14 @@ group = 'com.example'
 version = '1.0-SNAPSHOT'
 
 repositories {
+    maven {
+        url "http://localhost:8082/artifactory/maven-remote"
+        allowInsecureProtocol = true
+        credentials {
+            username = project.findProperty("artifactoryUser")
+            password = project.findProperty("artifactoryPassword")
+        }
+    }
     mavenCentral()
 }
 
