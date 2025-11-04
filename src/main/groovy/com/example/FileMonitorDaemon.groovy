@@ -45,8 +45,9 @@ class FileMonitorDaemon {
 
     /**
      * Process any existing JSON files in the input directory
+     * Package-private for testing
      */
-    private void processExistingFiles() {
+    void processExistingFiles() {
         inputDir.toFile().listFiles()?.each { file ->
             if (file.isFile() && file.name.endsWith('.json')) {
                 processJsonFile(file)
