@@ -1,0 +1,64 @@
+{
+  "type": "record",
+  "name": "UserRecord",
+  "namespace": "com.example.avro",
+  "fields": [
+    {
+      "name": "timestamp",
+      "type": "string"
+    },
+    {
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "name": "text",
+      "type": ["null", "string"],
+      "default": null
+    },
+    {
+      "name": "error_code",
+      "type": ["null", "string"],
+      "default": null
+    },
+    {
+      "name": "username",
+      "type": ["null", "string"],
+      "default": null
+    },
+    {
+      "name": "userid",
+      "type": "string"
+    },
+    {
+      "name": "address",
+      "type": ["null", "string"],
+      "default": null
+    },
+    {
+      "name": "city",
+      "type": ["null", "string"],
+      "default": null
+    },
+    {
+      "name": "state",
+      "type": ["null", "string"],
+      "default": null
+    },
+    {
+      "name": "postal_code",
+      "type": ["null", "string"],
+      "default": null
+    },
+    {
+      "name": "phone_num",
+      "type": ["null", "string"],
+      "default": null
+    },
+    {
+      "name": "mobile_num",
+      "type": ["null", "string"],
+      "default": null
+    }
+  ]
+}
