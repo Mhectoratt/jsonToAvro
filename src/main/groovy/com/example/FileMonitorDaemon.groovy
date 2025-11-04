@@ -131,9 +131,12 @@ class FileMonitorDaemon {
             // Mark file as processed
             processedFiles.add(jsonFile.name)
 
-            // Optionally, delete or move the processed JSON file
-            // For now, we'll leave it in place
-            // jsonFile.delete()
+            // Delete the processed JSON file
+            if (jsonFile.delete()) {
+                println "Deleted processed file: ${jsonFile.name}"
+            } else {
+                System.err.println "Warning: Could not delete file ${jsonFile.name}"
+            }
 
         } catch (Exception e) {
             System.err.println "Error processing file ${jsonFile.name}: ${e.message}"

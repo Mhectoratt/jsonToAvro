@@ -7,6 +7,7 @@ A Groovy-based daemon service that monitors a directory for JSON files and autom
 - **Automatic File Monitoring**: Watches the `in` directory for new JSON files
 - **Real-time Conversion**: Converts JSON files to Avro format as soon as they are detected
 - **Schema Support**: Uses an Avro schema that supports nullable fields
+- **Automatic Cleanup**: Deletes processed JSON files after successful conversion
 - **Graceful Shutdown**: Properly handles Ctrl+C shutdown signals
 
 ## Project Structure
@@ -128,6 +129,12 @@ java -cp build/libs/jsonToAvro-1.0-SNAPSHOT.jar:build/libs/* com.example.Main
    ```
    Processing file: test.json
    Successfully converted test.json to test.avro
+   Deleted processed file: test.json
+   ```
+
+5. Verify the JSON file was removed from the `in` directory:
+   ```bash
+   ls -la in/
    ```
 
 ## Sample JSON Format
@@ -178,6 +185,7 @@ Press `Ctrl+C` to gracefully stop the daemon. The shutdown hook will clean up re
    - Each record is validated against the Avro schema
    - Records are converted to Avro GenericRecord format
    - The Avro file is written to the output directory
+   - The original JSON file is deleted from the input directory
 3. **File Naming**: Output files use the same name as input files with `.avro` extension (e.g., `test.json` → `test.avro`)
 
 ## Development
