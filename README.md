@@ -51,6 +51,8 @@ The Avro schema (`user_record.avsc`) defines the following fields:
 - **postal_code** (optional, string): Postal code
 - **phone_num** (optional, string): Phone number
 - **mobile_num** (optional, string): Mobile number
+- **latitude** (optional, float): Latitude coordinate
+- **longitude** (optional, float): Longitude coordinate
 
 All fields except `timestamp`, `id`, and `userid` can be null or missing from the JSON input.
 

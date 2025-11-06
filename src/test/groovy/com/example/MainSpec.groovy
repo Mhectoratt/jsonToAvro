@@ -184,4 +184,47 @@ class MainSpec extends Specification {
         !testJsonFile1.exists()
         !testJsonFile2.exists()
     }
+
+    def "test converter handles latitude and longitude float fields"() {
+        given: "a JSON file with latitude and longitude coordinates"
+        def jsonWithCoordinates = inputDir.resolve("coordinates.json").toFile()
+        jsonWithCoordinates.text = '''[
+            {
+                "timestamp": "2025-11-06T10:00:00Z",
+                "id": "LOC-001",
+                "userid": "U777",
+                "text": "Location data",
+                "city": "San Francisco",
+                "state": "CA",
+                "latitude": 37.7749,
+                "longitude": -122.4194
+            },
+            {
+                "timestamp": "2025-11-06T10:01:00Z",
+                "id": "LOC-002",
+                "userid": "U888",
+                "text": "Another location",
+                "latitude": 40.7128,
+                "longitude": -74.0060
+            },
+            {
+                "timestamp": "2025-11-06T10:02:00Z",
+                "id": "LOC-003",
+                "userid": "U999",
+                "text": "No coordinates"
+            }
+        ]'''
+
+        def avroFile = outputDir.resolve("coordinates.avro").toFile()
+
+        and: "a converter instance"
+        def converter = new JsonToAvroConverter("user_record.avsc")
+
+        when: "converting JSON with coordinates to Avro"
+        converter.convertJsonToAvro(jsonWithCoordinates, avroFile)
+
+        then: "the conversion should succeed"
+        avroFile.exists()
+        avroFile.length() > 0
+    }
 }

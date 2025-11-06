@@ -59,6 +59,16 @@
       "name": "mobile_num",
       "type": ["null", "string"],
       "default": null
+    },
+    {
+      "name": "latitude",
+      "type": ["null", "float"],
+      "default": null
+    },
+    {
+      "name": "longitude",
+      "type": ["null", "float"],
+      "default": null
     }
   ]
 }
