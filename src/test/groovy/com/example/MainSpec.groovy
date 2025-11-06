@@ -227,4 +227,120 @@ class MainSpec extends Specification {
         avroFile.exists()
         avroFile.length() > 0
     }
+
+    def "test type coercion - string to float for coordinates"() {
+        given: "a JSON file with coordinates as strings"
+        def jsonWithStringCoords = inputDir.resolve("string-coords.json").toFile()
+        jsonWithStringCoords.text = '''[
+            {
+                "timestamp": "2025-11-06T10:00:00Z",
+                "id": "STR-001",
+                "userid": "U111",
+                "text": "Coordinates as strings",
+                "latitude": "37.7749",
+                "longitude": "-122.4194"
+            }
+        ]'''
+
+        def avroFile = outputDir.resolve("string-coords.avro").toFile()
+
+        and: "a converter instance"
+        def converter = new JsonToAvroConverter("user_record.avsc")
+
+        when: "converting JSON with string coordinates to Avro"
+        converter.convertJsonToAvro(jsonWithStringCoords, avroFile)
+
+        then: "the conversion should succeed with coerced values"
+        avroFile.exists()
+        avroFile.length() > 0
+    }
+
+    def "test type coercion - integer to float for coordinates"() {
+        given: "a JSON file with coordinates as integers"
+        def jsonWithIntCoords = inputDir.resolve("int-coords.json").toFile()
+        jsonWithIntCoords.text = '''[
+            {
+                "timestamp": "2025-11-06T10:00:00Z",
+                "id": "INT-001",
+                "userid": "U222",
+                "text": "Coordinates as integers",
+                "latitude": 37,
+                "longitude": -122
+            }
+        ]'''
+
+        def avroFile = outputDir.resolve("int-coords.avro").toFile()
+
+        and: "a converter instance"
+        def converter = new JsonToAvroConverter("user_record.avsc")
+
+        when: "converting JSON with integer coordinates to Avro"
+        converter.convertJsonToAvro(jsonWithIntCoords, avroFile)
+
+        then: "the conversion should succeed with coerced values"
+        avroFile.exists()
+        avroFile.length() > 0
+    }
+
+    def "test type coercion - mixed type conversions"() {
+        given: "a JSON file with various type mismatches"
+        def jsonWithMixedTypes = inputDir.resolve("mixed-types.json").toFile()
+        jsonWithMixedTypes.text = '''[
+            {
+                "timestamp": "2025-11-06T10:00:00Z",
+                "id": 999,
+                "userid": "U333",
+                "text": "Mixed types",
+                "latitude": "40.7128",
+                "longitude": -74
+            },
+            {
+                "timestamp": "2025-11-06T10:01:00Z",
+                "id": "STR-ID",
+                "userid": "U444",
+                "text": 12345,
+                "latitude": 51.5074,
+                "longitude": "-0.1278"
+            }
+        ]'''
+
+        def avroFile = outputDir.resolve("mixed-types.avro").toFile()
+
+        and: "a converter instance"
+        def converter = new JsonToAvroConverter("user_record.avsc")
+
+        when: "converting JSON with mixed types to Avro"
+        converter.convertJsonToAvro(jsonWithMixedTypes, avroFile)
+
+        then: "the conversion should succeed with all values coerced"
+        avroFile.exists()
+        avroFile.length() > 0
+    }
+
+    def "test type coercion - number to string fields"() {
+        given: "a JSON file with numbers in string fields"
+        def jsonWithNumberStrings = inputDir.resolve("number-strings.json").toFile()
+        jsonWithNumberStrings.text = '''[
+            {
+                "timestamp": "2025-11-06T10:00:00Z",
+                "id": 12345,
+                "userid": 67890,
+                "text": 999,
+                "phone_num": 5551234567,
+                "postal_code": 12345
+            }
+        ]'''
+
+        def avroFile = outputDir.resolve("number-strings.avro").toFile()
+
+        and: "a converter instance"
+        def converter = new JsonToAvroConverter("user_record.avsc")
+
+        when: "converting JSON with numbers in string fields to Avro"
+        converter.convertJsonToAvro(jsonWithNumberStrings, avroFile)
+
+        then: "the conversion should succeed with numbers converted to strings"
+        avroFile.exists()
+        avroFile.length() > 0
+    }
 }

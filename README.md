@@ -7,6 +7,7 @@ A Groovy-based daemon service that monitors a directory for JSON files and autom
 - **Automatic File Monitoring**: Watches the `in` directory for new JSON files
 - **Real-time Conversion**: Converts JSON files to Avro format as soon as they are detected
 - **Schema Support**: Uses an Avro schema that supports nullable fields
+- **Type Coercion**: Automatically converts data types to match the Avro schema
 - **Automatic Cleanup**: Deletes processed JSON files after successful conversion
 - **Graceful Shutdown**: Properly handles Ctrl+C shutdown signals
 
@@ -185,10 +186,63 @@ Press `Ctrl+C` to gracefully stop the daemon. The shutdown hook will clean up re
 2. **Processing**: When a JSON file is detected:
    - The file is read and parsed
    - Each record is validated against the Avro schema
-   - Records are converted to Avro GenericRecord format
+   - Records are converted to Avro GenericRecord format with automatic type coercion
    - The Avro file is written to the output directory
    - The original JSON file is deleted from the input directory
 3. **File Naming**: Output files use the same name as input files with `.avro` extension (e.g., `test.json` → `test.avro`)
+
+## Type Coercion
+
+The converter automatically handles type mismatches between JSON data and the Avro schema. This allows for flexible input data formats:
+
+### Supported Conversions
+
+- **To String**: Any value can be converted to string
+  - Numbers: `123` → `"123"`
+  - Booleans: `true` → `"true"`
+
+- **To Float/Double**:
+  - Strings: `"37.7749"` → `37.7749`
+  - Integers: `37` → `37.0`
+  - Other numbers: `37.7749` → `37.7749`
+
+- **To Integer/Long**:
+  - Strings: `"123"` → `123`
+  - Floats: `123.456` → `123` (truncated)
+  - Other numbers: Converted appropriately
+
+- **To Boolean**:
+  - Strings: `"true"` → `true`, `"false"` → `false`
+  - Numbers: `0` → `false`, non-zero → `true`
+
+### Examples
+
+**Example 1: Coordinates as strings**
+```json
+{
+  "latitude": "37.7749",
+  "longitude": "-122.4194"
+}
+```
+These will be automatically converted to float values.
+
+**Example 2: ID as integer**
+```json
+{
+  "id": 12345
+}
+```
+This will be automatically converted to string `"12345"`.
+
+**Example 3: Text as number**
+```json
+{
+  "text": 999
+}
+```
+This will be automatically converted to string `"999"`.
+
+If a value cannot be coerced (e.g., `"abc"` to float), the converter will log a warning and use the original value, which may cause the conversion to fail if the type is incompatible.
 
 ## Development
 
